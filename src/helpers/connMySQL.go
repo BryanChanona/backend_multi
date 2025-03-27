@@ -32,7 +32,7 @@ func ConnMySQL() (db *sql.DB, err error) {
 	}
 	//Manejo de conexión  poll
 	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
+	db.SetMaxOpenConns(16)
 	db.SetMaxIdleConns(10)
 
 	if err := db.Ping(); err != nil {
@@ -40,7 +40,7 @@ func ConnMySQL() (db *sql.DB, err error) {
 		return nil, err
 	}
 
-	fmt.Println("Conexión exitosa a la base de datos")
+	
 	return db, nil
 
 
