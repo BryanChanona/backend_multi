@@ -18,15 +18,26 @@ func NewMySQL(db *sql.DB) *MySQL {
 
 func (sql *MySQL) SaveTemperature(temperatura domain.Temperature) error {
 
-	fecha, err := time.Parse("02/01/2006", temperatura.Date)
-	if err != nil {
-		return fmt.Errorf("formato de fecha inválido: %v", err)
-	}
+	if temperatura.Date == "" {
+        temperatura.Date = time.Now().Format("2006-01-02")  // Formato YYYY-MM-DD
+    }
 
-	hora, err := time.Parse("15:04", temperatura.Time)
-	if err != nil {
-		return fmt.Errorf("formato de hora inválido: %v", err)
-	}
+    // Si no se proporciona hora, usa la hora actual
+    if temperatura.Time == "" {
+        temperatura.Time = time.Now().Format("15:04")  // Formato HH:mm
+    }
+
+    // Parsear la fecha
+    fecha, err := time.Parse("2006-01-02", temperatura.Date)
+    if err != nil {
+        return fmt.Errorf("formato de fecha inválido: %v", err)
+    }
+
+    // Parsear la hora
+    hora, err := time.Parse("15:04", temperatura.Time)
+    if err != nil {
+        return fmt.Errorf("formato de hora inválido: %v", err)
+    }
 
     // Preparar la consulta SQL para insertar
     query := `INSERT INTO registrotemperatura 
