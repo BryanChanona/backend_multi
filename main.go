@@ -9,12 +9,15 @@ import (
 	routesTemperature "github.com/BryanChanona/backend_multi/src/Temperature/infrastructure/routes"
 	routesOxygen "github.com/BryanChanona/backend_multi/src/Oxygen/infrastructure/routes"
 	oxygenDependencies "github.com/BryanChanona/backend_multi/src/Oxygen/infrastructure/dependencies"
+	heartRateDependencies "github.com/BryanChanona/backend_multi/src/HeartRate/infrastructure/dependencies"
+	routesHeartRate "github.com/BryanChanona/backend_multi/src/HeartRate/infrastructure/routes"
 )
 
 func main() {
 	userDependencies.Init()
 	temperatureDependencies.Init()
 	oxygenDependencies.Init()
+	heartRateDependencies.Init()
 
 	 
 	r:= gin.Default()
@@ -22,6 +25,7 @@ func main() {
 	routesUser.Routes(r)
 	routesTemperature.Routes(r)
 	routesOxygen.Routes(r)
+	routesHeartRate.Routes(r)
 	
 	
 	
