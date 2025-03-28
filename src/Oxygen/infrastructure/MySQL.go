@@ -125,3 +125,44 @@ func (sql *MySQL)GetOxygenByDate(idUser int, date string)(domain.UserOxygen, err
 	return userOxygen, nil
 
 }
+func (sql *MySQL)GetOxygenById(idUser int) ([]domain.UserOxygen, error){
+	var userOxygens []domain.UserOxygen
+
+	query := `
+	SELECT 
+        ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
+        u.id_usuario,u.nombre,u.correo,u.password,u.premium
+    FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE u.id_usuario = ?`
+
+	rows, err := sql.db.Query(query,idUser)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var userOxygen domain.UserOxygen
+
+		err := rows.Scan(
+			&userOxygen.Id_oxygen,
+			&userOxygen.Date,
+			&userOxygen.Time,
+			&userOxygen.RegisteredMeasure,
+			&userOxygen.Id_user,
+			&userOxygen.Name,
+			&userOxygen.Email,
+			&userOxygen.Password,
+			&userOxygen.Premium)
+
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear fila: %v", err)
+		}
+
+		userOxygens = append(userOxygens, userOxygen)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al recorrer filas: %v", err)
+	}
+
+	return userOxygens, nil
+}

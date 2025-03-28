@@ -35,3 +35,7 @@ func GetOxygenUserByDateController()*controller.OxygenByDateController{
 	useCase := UseCase.NewGetOxygenByDate(&mySQL)
 	return controller.NewOxygenByDateController(useCase)
 }
+func GetOxygenByIdController()*controller.OxygenByIdController{
+	useCase := UseCase.NewOxygenByIdUc(&mySQL)
+	return controller.NewOxygenByIdController(useCase)
+}
