@@ -98,3 +98,30 @@ func (sql *MySQL) GetUserOxygen() ([]domain.UserOxygen, error) {
 	return userOxygenations, nil
 
 }
+func (sql *MySQL)GetOxygenByDate(idUser int, date string)(domain.UserOxygen, error){
+	var userOxygen domain.UserOxygen
+
+	query := `SELECT 
+        ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
+        u.id_usuario,u.nombre,u.correo,u.password,u.premium
+    FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE ro.fecha =? AND u.id_usuario = ?`
+
+	row := sql.db.QueryRow(query, date, idUser)
+	err := row.Scan(
+			&userOxygen.Id_oxygen,
+			&userOxygen.Date,
+			&userOxygen.Time,
+			&userOxygen.RegisteredMeasure,
+			&userOxygen.Id_user,
+			&userOxygen.Name,
+			&userOxygen.Email,
+			&userOxygen.Password,
+			&userOxygen.Premium)
+	if err != nil {
+
+		return domain.UserOxygen{}, err
+	}
+
+	return userOxygen, nil
+
+}

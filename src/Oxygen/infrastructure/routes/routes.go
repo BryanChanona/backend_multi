@@ -9,8 +9,10 @@ func Routes(router *gin.Engine){
 	routes := router.Group("/oxygen")
 	saveOxygenController := dependencies.GetSaveOxygenController().Execute
 	getUserOxygenController := dependencies.GetOxygenationsController().Execute
+	getUserOxygenByDate := dependencies.GetOxygenUserByDateController().Execute
 
 	routes.POST("/",saveOxygenController)
 	routes.GET("/",getUserOxygenController)
+	routes.GET("/:idUser/:date",getUserOxygenByDate)
 
 }
