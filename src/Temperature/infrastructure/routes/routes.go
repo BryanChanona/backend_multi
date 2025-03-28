@@ -11,8 +11,10 @@ func Routes(router *gin.Engine) {
 	saveTemperatureController := dependencies.GetSaveTemperatureController().Execute
 	getUSerTemperaturesController := dependencies.GetUserTemperaturesController().Execute
 	getUserTemperatureByDateController := dependencies.GetUserTemperatureByDateController().Execute
+	getUserTemperatureByIdController := dependencies.GetUserTemperaturesByIdController().Execute
 
 	routes.POST("/", saveTemperatureController)
 	routes.GET("/",getUSerTemperaturesController)
 	routes.GET("/:idUser/:date",getUserTemperatureByDateController)
+	routes.GET("/:idUser",getUserTemperatureByIdController)
 }
