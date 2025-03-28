@@ -92,3 +92,34 @@ func (sql *MySQL) GetTemperature() ([]domain.UserTemperature, error) {
 
 	return userTemperatures, nil
 }
+
+func (sql *MySQL) GetTemperatureByDate( idUser int,date string,) (domain.UserTemperature, error) {
+	var userTemperature domain.UserTemperature
+
+	query := `
+	SELECT 
+			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.password, u.premium, 
+			rt.medidaRegistrada, rt.fecha, rt.hora 
+		FROM Usuario u 
+		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
+		WHERE rt.fecha = ? AND u.id_usuario = ?`
+
+	row := sql.db.QueryRow(query, date, idUser)
+	err := row.Scan(
+		&userTemperature.Id_temp,
+		&userTemperature.Id_user,
+		&userTemperature.Name,
+		&userTemperature.Email,
+		&userTemperature.Password,
+		&userTemperature.Premium,
+		&userTemperature.RegisteredMeasure,
+		&userTemperature.Date,
+		&userTemperature.Time,
+	)
+	if err != nil {
+
+		return domain.UserTemperature{}, err
+	}
+
+	return userTemperature, nil
+}

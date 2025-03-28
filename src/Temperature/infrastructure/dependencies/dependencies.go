@@ -33,4 +33,9 @@ func GetUserTemperaturesController() *controllers.GetTemperatureUsersController{
 	return controllers.NewGetTemperatureUsersController(useCase)
 }
 
+func GetUserTemperatureByDateController() *controllers.TemperatureByDateController{
+	useCase := UseCase.NewGetTemperatureByDate(&mySQL)
+	return controllers.NewTemperatureByDateController(useCase)
+}
+
 
