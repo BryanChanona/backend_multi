@@ -41,15 +41,14 @@ func (sql *MySQL) SaveTemperature(temperatura domain.Temperature) error {
 
     // Preparar la consulta SQL para insertar
     query := `INSERT INTO registrotemperatura 
-              (id_user, fecha, hora, medidaregistrada) 
-              VALUES (?, ?, ?, ?)`
+              (id_user, fecha, hora, medidaregistrada,id_dispositivo) 
+              VALUES (?, ?, ?, ?,?)`
     
     _, err = sql.db.Exec(query,
         temperatura.Id_user,
         fecha.Format("2006-01-02"),
         hora.Format("15:04:00"),
-        temperatura.RegisteredMeasure,
-    )
+        temperatura.RegisteredMeasure,temperatura.Id_device)
     
     if err != nil {
         return fmt.Errorf("error al guardar temperatura: %v", err)
