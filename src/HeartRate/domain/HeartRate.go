@@ -6,6 +6,7 @@ type HeartRate struct {
 	Date string `json:"date"`
 	Time string `json:"time"`
 	RegisteredMeasure float64 `json:"registeredMeasure"`
+	Id_device int `json:"id_device"`
 }
 
 type UserHeartRate struct{
