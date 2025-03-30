@@ -39,12 +39,12 @@ func (sql *MySQL) SaveHeartRate(heartRate domain.HeartRate) error{
     if err != nil {
         return fmt.Errorf("formato de hora inválido: %v", err)
     }
-	query, err := sql.db.Prepare("INSERT INTO registrobpm (id_user, fecha, hora, medidaRegistrada) VALUES (?, ?, ?, ?)")
+	query, err := sql.db.Prepare("INSERT INTO registrobpm (id_user, fecha, hora, medidaRegistrada,id_dispositivo) VALUES (?, ?, ?, ?,?)")
 	if err != nil {
 		return fmt.Errorf("error preparando consulta SQL: %v", err)
 	}
 	defer query.Close() // Aquí sí se usa defer correctamente
-	_, err = query.Exec(heartRate.Id_user, fecha.Format("2006-01-02"), hora.Format("15:04:05"), heartRate.RegisteredMeasure)
+	_, err = query.Exec(heartRate.Id_user, fecha.Format("2006-01-02"), hora.Format("15:04:05"), heartRate.RegisteredMeasure,heartRate.Id_device)
 	if err != nil {
 		log.Println("Error guardando el oxígeno medido:", err)
 		return fmt.Errorf("error ejecutando la consulta SQL: %v", err)
