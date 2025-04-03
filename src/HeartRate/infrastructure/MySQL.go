@@ -59,7 +59,7 @@ func (sql *MySQL)GetUserHeartRate() ([]domain.UserHeartRate, error){
 	query := `
 	SELECT
 		rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
-		u.id_usuario,u.nombre, u.correo,u.password,u.premium
+		u.id_usuario,u.nombre, u.correo,u.premium
 	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario`
 
 	rows, err := sql.db.Query(query)
@@ -79,7 +79,6 @@ func (sql *MySQL)GetUserHeartRate() ([]domain.UserHeartRate, error){
 			&userHeartRate.Id_user,
 			&userHeartRate.Name,
 			&userHeartRate.Email,
-			&userHeartRate.Password,
 			&userHeartRate.Premium)
 
 		if err != nil {
@@ -99,16 +98,30 @@ func (sql *MySQL)GetUserHeartRate() ([]domain.UserHeartRate, error){
 
 }
 
-func (sql *MySQL)GetHeartRateByDate(idUser int,date string) (domain.UserHeartRate,error){
-	var userHeartRate domain.UserHeartRate
+func (sql *MySQL)GetHeartRateByDate(idUser int,date string) ([]domain.UserHeartRate,error){
+	var userHeartRateArray []domain.UserHeartRate
+
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return nil, fmt.Errorf("error al parsear la fecha: %v", err)
+	}
 
 	query := `SELECT 
        rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
-		u.id_usuario,u.nombre, u.correo,u.password,u.premium
+		u.id_usuario,u.nombre, u.correo,u.premium
 	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE rb.fecha =? AND u.id_usuario = ?`
 
-	row := sql.db.QueryRow(query, date, idUser)
-	err := row.Scan(
+	rows, err := sql.db.Query(query, parsedDate, idUser)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		var userHeartRate domain.UserHeartRate
+
+		// Escanear los resultados de cada fila
+		err := rows.Scan(
 			&userHeartRate.Id_bpm,
 			&userHeartRate.Date,
 			&userHeartRate.Time,
@@ -116,21 +129,34 @@ func (sql *MySQL)GetHeartRateByDate(idUser int,date string) (domain.UserHeartRat
 			&userHeartRate.Id_user,
 			&userHeartRate.Name,
 			&userHeartRate.Email,
-			&userHeartRate.Password,
 			&userHeartRate.Premium)
-	if err != nil {
 
-		return domain.UserHeartRate{}, err
+		// Si ocurre un error al escanear la fila
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear fila: %v", err)
+		}
+
+		// Añadir el registro al array
+		userHeartRateArray = append(userHeartRateArray, userHeartRate)
+
 	}
 
-	return userHeartRate, nil
+	// Revisar si hubo algún error durante el recorrido de las filas
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al recorrer filas: %v", err)
+	}
+
+
+
+	// Retornar el array de resultados
+	return userHeartRateArray, nil
 }
 func (sql *MySQL) GetHeartRateById(idUser int) ([]domain.UserHeartRate,error){
 	var userHeartRatesTwo []domain.UserHeartRate
 
 	query := `SELECT 
        rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
-		u.id_usuario,u.nombre, u.correo,u.password,u.premium
+		u.id_usuario,u.nombre, u.correo,u.premium
 	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE  u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query,idUser)
@@ -150,7 +176,6 @@ func (sql *MySQL) GetHeartRateById(idUser int) ([]domain.UserHeartRate,error){
 			&userHeartRate.Id_user,
 			&userHeartRate.Name,
 			&userHeartRate.Email,
-			&userHeartRate.Password,
 			&userHeartRate.Premium)
 
 		if err != nil {

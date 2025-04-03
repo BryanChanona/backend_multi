@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/BryanChanona/backend_multi/src/Temperature/application/UseCase"
 	"github.com/gin-gonic/gin"
@@ -17,18 +16,21 @@ func NewTemperatureByDateController(getTemperatureByDate *UseCase.GetTemperature
 }
 
 func (controller *TemperatureByDateController) Execute(ctx *gin.Context) {
-	// Obtener la fecha y el idUsuario desde la URL
-	
-	idUser, err := strconv.Atoi(ctx.Param("idUser"))
-	if err != nil {
-		// Manejo de error si el idUser no es válido
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+	idUser, exists := ctx.Get("id_user")
+	if !exists {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de usuario no proporcionado"})
+		return
+	}
+
+	idUs, ok := idUser.(int)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de usuario no válido"})
 		return
 	}
 	date := ctx.Param("date")
 
 	// Llamada al UseCase
-	temperatureUser, err := controller.getTemperatureByDate.Execute(idUser, date)
+	temperatureUser, err := controller.getTemperatureByDate.Execute(idUs, date)
 	if err != nil {
 		// Manejo de error si hay un problema al obtener los datos
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

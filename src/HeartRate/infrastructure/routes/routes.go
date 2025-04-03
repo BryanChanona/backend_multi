@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/BryanChanona/backend_multi/src/HeartRate/infrastructure/dependencies"
+	"github.com/BryanChanona/backend_multi/src/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,8 +15,8 @@ func Routes(router *gin.Engine){
 
 	routes.POST("/",getSaveHeartRateController)
 	routes.GET("/",getUserHeartRateController)
-	routes.GET("/:idUser/:date",getUserHeartRateByDateController)
-	routes.GET("/:idUser",getUserHeartRateByIdController)
+	routes.GET("/:date",middlewares.AuthMiddleware(),getUserHeartRateByDateController)
+	routes.GET("/heartRateById",middlewares.AuthMiddleware(),getUserHeartRateByIdController)
 
 
 }

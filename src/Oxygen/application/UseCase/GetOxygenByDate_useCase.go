@@ -10,6 +10,6 @@ func NewGetOxygenByDate(db domain.IOxygenRepository) *GetOxygenByDateUc {
 	return &GetOxygenByDateUc{db: db}
 }
 
-func (useCase *GetOxygenByDateUc) Execute(id_user int, date string) (domain.UserOxygen, error) {
-	return useCase.db.GetOxygenByDate(id_user, date)
+func (useCase *GetOxygenByDateUc) Execute(date string,idUser int) ([]domain.UserOxygen, error) {
+	return useCase.db.GetOxygenByDate(date,idUser)
 }

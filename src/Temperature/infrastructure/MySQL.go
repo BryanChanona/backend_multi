@@ -61,7 +61,7 @@ func (sql *MySQL) GetTemperature() ([]domain.UserTemperature, error) {
 
 	query := `
 		SELECT 
-			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.password, u.premium, 
+			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
 		FROM Usuario u 
 		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario
@@ -80,8 +80,7 @@ func (sql *MySQL) GetTemperature() ([]domain.UserTemperature, error) {
 			&ut.Id_temp,            // INT
 			&ut.Id_user,            // INT
 			&ut.Name,               // STRING (nombre)
-			&ut.Email,              // STRING (correo)
-			&ut.Password,           // STRING (password)
+			&ut.Email,              // STRING (correo)          // STRING (password)
 			&ut.Premium,            // BOOL (premium)
 			&ut.RegisteredMeasure,  // FLOAT (medidaRegistrada)
 			&ut.Date,               // STRING (fecha)
@@ -103,35 +102,60 @@ func (sql *MySQL) GetTemperature() ([]domain.UserTemperature, error) {
 	return userTemperatures, nil
 }
 
-func (sql *MySQL) GetTemperatureByDate( idUser int,date string,) (domain.UserTemperature, error) {
-	var userTemperature domain.UserTemperature
+func (sql *MySQL) GetTemperatureByDate( idUser int,date string,) ([]domain.UserTemperature, error) {
+	var userTemperatureArray []domain.UserTemperature
+
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return nil, fmt.Errorf("error al parsear la fecha: %v", err)
+	}
 
 	query := `
 	SELECT 
-			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.password, u.premium, 
+			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
 		FROM Usuario u 
 		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
 		WHERE rt.fecha = ? AND u.id_usuario = ?`
 
-	row := sql.db.QueryRow(query, date, idUser)
-	err := row.Scan(
-		&userTemperature.Id_temp,
+	rows, err := sql.db.Query(query, parsedDate, idUser)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var userTemperature domain.UserTemperature
+
+		// Escanear los resultados de cada fila
+		err := rows.Scan(
+			&userTemperature.Id_temp,
 		&userTemperature.Id_user,
 		&userTemperature.Name,
 		&userTemperature.Email,
-		&userTemperature.Password,
 		&userTemperature.Premium,
 		&userTemperature.RegisteredMeasure,
 		&userTemperature.Date,
-		&userTemperature.Time,
-	)
-	if err != nil {
+		&userTemperature.Time)
 
-		return domain.UserTemperature{}, err
+		// Si ocurre un error al escanear la fila
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear fila: %v", err)
+		}
+
+		// Añadir el registro al array
+		userTemperatureArray= append(userTemperatureArray, userTemperature)
+
 	}
 
-	return userTemperature, nil
+	// Revisar si hubo algún error durante el recorrido de las filas
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al recorrer filas: %v", err)
+	}
+
+
+
+	// Retornar el array de resultados
+	return userTemperatureArray, nil
 }
 
 func (sql *MySQL)GetTemperatureById(idUser int)([]domain.UserTemperature, error){
@@ -139,7 +163,7 @@ func (sql *MySQL)GetTemperatureById(idUser int)([]domain.UserTemperature, error)
 
 	query:= `
 	SELECT 
-			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.password, u.premium, 
+			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
 		FROM Usuario u 
 		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
@@ -159,7 +183,6 @@ func (sql *MySQL)GetTemperatureById(idUser int)([]domain.UserTemperature, error)
 		&userTemperature.Id_user,
 		&userTemperature.Name,
 		&userTemperature.Email,
-		&userTemperature.Password,
 		&userTemperature.Premium,
 		&userTemperature.RegisteredMeasure,
 		&userTemperature.Date,

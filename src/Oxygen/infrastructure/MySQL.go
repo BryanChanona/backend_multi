@@ -61,7 +61,7 @@ func (sql *MySQL) GetUserOxygen() ([]domain.UserOxygen, error) {
 	query := `
     SELECT 
         ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
-        u.id_usuario,u.nombre,u.correo,u.password,u.premium
+        u.id_usuario,u.nombre,u.correo,u.premium
     FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario`
 
 	rows, err := sql.db.Query(query)
@@ -81,7 +81,6 @@ func (sql *MySQL) GetUserOxygen() ([]domain.UserOxygen, error) {
 			&uo.Id_user,
 			&uo.Name,
 			&uo.Email,
-			&uo.Password,
 			&uo.Premium)
 
 		if err != nil {
@@ -98,16 +97,28 @@ func (sql *MySQL) GetUserOxygen() ([]domain.UserOxygen, error) {
 	return userOxygenations, nil
 
 }
-func (sql *MySQL)GetOxygenByDate(idUser int, date string)(domain.UserOxygen, error){
-	var userOxygen domain.UserOxygen
+func (sql *MySQL)GetOxygenByDate( date string,idUser int)([]domain.UserOxygen, error){
+	var userOxygenArray []domain.UserOxygen
+
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return nil, fmt.Errorf("error al parsear la fecha: %v", err)
+	}
 
 	query := `SELECT 
         ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
-        u.id_usuario,u.nombre,u.correo,u.password,u.premium
+        u.id_usuario,u.nombre,u.correo,u.premium
     FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE ro.fecha =? AND u.id_usuario = ?`
+	rows, err := sql.db.Query(query, parsedDate, idUser)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var userOxygen domain.UserOxygen
 
-	row := sql.db.QueryRow(query, date, idUser)
-	err := row.Scan(
+		// Escanear los resultados de cada fila
+		err := rows.Scan(
 			&userOxygen.Id_oxygen,
 			&userOxygen.Date,
 			&userOxygen.Time,
@@ -115,14 +126,31 @@ func (sql *MySQL)GetOxygenByDate(idUser int, date string)(domain.UserOxygen, err
 			&userOxygen.Id_user,
 			&userOxygen.Name,
 			&userOxygen.Email,
-			&userOxygen.Password,
 			&userOxygen.Premium)
-	if err != nil {
 
-		return domain.UserOxygen{}, err
+		// Si ocurre un error al escanear la fila
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear fila: %v", err)
+		}
+
+		// Añadir el registro al array
+		userOxygenArray = append(userOxygenArray, userOxygen)
+
 	}
 
-	return userOxygen, nil
+	// Revisar si hubo algún error durante el recorrido de las filas
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al recorrer filas: %v", err)
+	}
+
+
+
+	// Retornar el array de resultados
+	return userOxygenArray, nil
+
+	
+
+	
 
 }
 func (sql *MySQL)GetOxygenById(idUser int) ([]domain.UserOxygen, error){
@@ -131,7 +159,7 @@ func (sql *MySQL)GetOxygenById(idUser int) ([]domain.UserOxygen, error){
 	query := `
 	SELECT 
         ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
-        u.id_usuario,u.nombre,u.correo,u.password,u.premium
+        u.id_usuario,u.nombre,u.correo,u.premium
     FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query,idUser)
@@ -150,7 +178,6 @@ func (sql *MySQL)GetOxygenById(idUser int) ([]domain.UserOxygen, error){
 			&userOxygen.Id_user,
 			&userOxygen.Name,
 			&userOxygen.Email,
-			&userOxygen.Password,
 			&userOxygen.Premium)
 
 		if err != nil {

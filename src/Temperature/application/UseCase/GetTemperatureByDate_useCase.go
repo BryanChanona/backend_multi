@@ -11,6 +11,6 @@ func NewGetTemperatureByDate(db domain.ITemperature) *GetTemperatureByDate{
 }
 
 
-func (useCase *GetTemperatureByDate)Execute(id_user int,date string, ) (domain.UserTemperature,error){
+func (useCase *GetTemperatureByDate)Execute(id_user int,date string, ) ([]domain.UserTemperature,error){
 	return useCase.db.GetTemperatureByDate(id_user,date)
 }

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/BryanChanona/backend_multi/src/Temperature/infrastructure/dependencies"
+	"github.com/BryanChanona/backend_multi/src/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,6 @@ func Routes(router *gin.Engine) {
 
 	routes.POST("/", saveTemperatureController)
 	routes.GET("/",getUSerTemperaturesController)
-	routes.GET("/:idUser/:date",getUserTemperatureByDateController)
-	routes.GET("/:idUser",getUserTemperatureByIdController)
+	routes.GET("/:date",middlewares.AuthMiddleware(),getUserTemperatureByDateController)
+	routes.GET("/temperatureById",middlewares.AuthMiddleware(),getUserTemperatureByIdController)
 }

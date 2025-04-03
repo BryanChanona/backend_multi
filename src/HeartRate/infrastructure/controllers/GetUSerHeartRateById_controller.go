@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/BryanChanona/backend_multi/src/HeartRate/application/UseCase"
 	"github.com/gin-gonic/gin"
@@ -16,14 +15,18 @@ func NewUserHeartRateByIdController(useCase *UseCase.HeartRateByIdUc)*UserHeartR
 	return &UserHeartRateByIdController{useCase: useCase}
 }
 func (controller *UserHeartRateByIdController) Execute(ctx *gin.Context){
-	IdUser, err := strconv.Atoi(ctx.Param("idUser"))
-
-	if err != nil {
-		// Manejo de error si el idUser no es válido
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+	idUser, exists := ctx.Get("id_user")
+	if !exists {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de usuario no proporcionado"})
 		return
 	}
-	heartRateUsers, err := controller.useCase.Execute(IdUser)
+
+	idUs, ok := idUser.(int)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID de usuario no válido"})
+		return
+	}
+	heartRateUsers, err := controller.useCase.Execute(idUs)
 	if err != nil {
 		// Manejo de error si hay un problema al obtener los datos
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

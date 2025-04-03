@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/BryanChanona/backend_multi/src/Oxygen/infrastructure/dependencies"
+	"github.com/BryanChanona/backend_multi/src/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +15,7 @@ func Routes(router *gin.Engine){
 
 	routes.POST("/",saveOxygenController)
 	routes.GET("/",getUserOxygenController)
-	routes.GET("/:idUser/:date",getUserOxygenByDate)
-	routes.GET("/:idUser",getUserOxygenById)
+	routes.GET("/:date",middlewares.AuthMiddleware(),getUserOxygenByDate)
+	routes.GET("/oxygenById",middlewares.AuthMiddleware(),getUserOxygenById)
 
 }
