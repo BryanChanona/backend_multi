@@ -27,4 +27,8 @@ func GetRegisterCustomRhythm() *controllers.RegisterCustomRhythmController{
 	useCase := UseCase.NewRegisterCustomRhythmUC(&mySQL)
 	return controllers.NewRegisterCustomRhythmController(useCase)
 }
+func GetUpdateCustomRhythm() *controllers.UpdateCustomRhythmController{
+	useCase := UseCase.NewUpdateCustomRhythmUC(&mySQL)
+	return controllers.NewUpdateCustomRhythmController(useCase)
+}
 
