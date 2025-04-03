@@ -9,5 +9,7 @@ import (
 func Routes(r *gin.Engine){
 	routes := r.Group("customRhythm")
 	registerCustomRhythm := dependencies.GetRegisterCustomRhythm().Execute
+	updateCustomRhythm := dependencies.GetUpdateCustomRhythm().Execute
 	routes.POST("/",middlewares.AuthMiddleware(),registerCustomRhythm)
+	routes.PUT("/update",middlewares.AuthMiddleware(),updateCustomRhythm)
 }

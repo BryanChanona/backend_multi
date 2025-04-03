@@ -24,3 +24,12 @@ func (sql *MySQL)RegisterCustomRhythm(customRhythm domain.CustomRhythmModel) err
 	}
 	return nil
 }
+
+func (sql *MySQL)UpdateCustomRhythm( idUser int ,custom domain.CustomRhythmModel) error{
+	query := `UPDATE ritmopersonalizado SET media_bpm_baja = ?, media_bpm_alta = ? WHERE id_user = ?`
+	_, err := sql.db.Exec(query, custom.MediaBpmBaja, custom.MediaBpmAlta, idUser)
+	if err != nil {
+		return err
+	}
+	return nil
+}
