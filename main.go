@@ -9,12 +9,16 @@ import (
 	oxygenDependencies "github.com/BryanChanona/backend_multi/src/Oxygen/infrastructure/dependencies"
 	heartRateDependencies "github.com/BryanChanona/backend_multi/src/HeartRate/infrastructure/dependencies"
 	routesHeartRate "github.com/BryanChanona/backend_multi/src/HeartRate/infrastructure/routes"
+	customRhythmDependencies "github.com/BryanChanona/backend_multi/src/CustomRhythm/infrastructure/dependencies"
+	routesCustomRhythm "github.com/BryanChanona/backend_multi/src/CustomRhythm/infrastructure/routes"
 )
 
 func main() {
 	temperatureDependencies.Init()
 	oxygenDependencies.Init()
 	heartRateDependencies.Init()
+	customRhythmDependencies.Init()
+
 
 	 
 	r:= gin.Default()
@@ -22,6 +26,7 @@ func main() {
 	routesTemperature.Routes(r)
 	routesOxygen.Routes(r)
 	routesHeartRate.Routes(r)
+	routesCustomRhythm.Routes(r)
 	
 	
 	
