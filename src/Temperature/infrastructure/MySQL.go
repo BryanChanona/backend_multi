@@ -64,7 +64,7 @@ func (sql *MySQL) GetTemperature() ([]domain.UserTemperature, error) {
 			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
 		FROM usuario u 
-		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario
+		INNER JOIN registroTemperatura rt ON rt.id_user = u.id_usuario
 	`
 
 	rows, err := sql.db.Query(query)
@@ -115,7 +115,7 @@ func (sql *MySQL) GetTemperatureByDate( idUser int,date string,) ([]domain.UserT
 			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
 		FROM usuario u 
-		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
+		INNER JOIN registroTemperatura rt ON rt.id_user = u.id_usuario 
 		WHERE rt.fecha = ? AND u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query, parsedDate, idUser)
@@ -166,7 +166,7 @@ func (sql *MySQL)GetTemperatureById(idUser int)([]domain.UserTemperature, error)
 			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
 		FROM usuario u 
-		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
+		INNER JOIN registroTemperatura rt ON rt.id_user = u.id_usuario 
 		WHERE u.id_usuario = ?`
 	
 		rows, err := sql.db.Query(query,idUser)
