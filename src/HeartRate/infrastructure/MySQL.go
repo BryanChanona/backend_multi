@@ -60,7 +60,7 @@ func (sql *MySQL)GetUserHeartRate() ([]domain.UserHeartRate, error){
 	SELECT
 		rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
 		u.id_usuario,u.nombre, u.correo,u.premium
-	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario`
+	FROM usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario`
 
 	rows, err := sql.db.Query(query)
 	if err != nil {
@@ -109,7 +109,7 @@ func (sql *MySQL)GetHeartRateByDate(idUser int,date string) ([]domain.UserHeartR
 	query := `SELECT 
        rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
 		u.id_usuario,u.nombre, u.correo,u.premium
-	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE rb.fecha =? AND u.id_usuario = ?`
+	FROM usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE rb.fecha =? AND u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query, parsedDate, idUser)
 	if err != nil {
@@ -157,7 +157,7 @@ func (sql *MySQL) GetHeartRateById(idUser int) ([]domain.UserHeartRate,error){
 	query := `SELECT 
        rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
 		u.id_usuario,u.nombre, u.correo,u.premium
-	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE  u.id_usuario = ?`
+	FROM usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE  u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query,idUser)
 	if err != nil {
@@ -200,7 +200,7 @@ func (sql *MySQL)GetHeartRateSupervisorByIdUser(idUser int) ([]domain.UserHeartR
 	query := `SELECT 
        rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
 		u.id_usuario,u.nombre, u.correo,u.premium
-	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE  u.id_usuario = ?`
+	FROM usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE  u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query,idUser)
 	if err != nil {

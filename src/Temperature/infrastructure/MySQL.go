@@ -63,7 +63,7 @@ func (sql *MySQL) GetTemperature() ([]domain.UserTemperature, error) {
 		SELECT 
 			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
-		FROM Usuario u 
+		FROM usuario u 
 		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario
 	`
 
@@ -114,7 +114,7 @@ func (sql *MySQL) GetTemperatureByDate( idUser int,date string,) ([]domain.UserT
 	SELECT 
 			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
-		FROM Usuario u 
+		FROM usuario u 
 		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
 		WHERE rt.fecha = ? AND u.id_usuario = ?`
 
@@ -165,7 +165,7 @@ func (sql *MySQL)GetTemperatureById(idUser int)([]domain.UserTemperature, error)
 	SELECT 
 			rt.id_temp, u.id_usuario, u.nombre, u.correo, u.premium, 
 			rt.medidaRegistrada, rt.fecha, rt.hora 
-		FROM Usuario u 
+		FROM usuario u 
 		INNER JOIN RegistroTemperatura rt ON rt.id_user = u.id_usuario 
 		WHERE u.id_usuario = ?`
 	
@@ -210,7 +210,7 @@ func (sql *MySQL)GetTemperatureSupervisorByIdUser(idUser int) ([]domain.UserTemp
 	query := `SELECT 
 		rt.id_temp,rt.fecha,rt.hora,rt.medidaRegistrada,
 		u.id_usuario,u.nombre, u.correo,u.premium
-	FROM Usuario u INNER JOIN registrotemperatura rt ON rt.id_user = u.id_usuario WHERE  u.id_usuario = ?`
+	FROM usuario u INNER JOIN registrotemperatura rt ON rt.id_user = u.id_usuario WHERE  u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query,idUser)
 	if err != nil {

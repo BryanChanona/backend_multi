@@ -62,7 +62,7 @@ func (sql *MySQL) GetUserOxygen() ([]domain.UserOxygen, error) {
     SELECT 
         ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
         u.id_usuario,u.nombre,u.correo,u.premium
-    FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario`
+    FROM usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario`
 
 	rows, err := sql.db.Query(query)
 	if err != nil {
@@ -108,7 +108,7 @@ func (sql *MySQL)GetOxygenByDate( date string,idUser int)([]domain.UserOxygen, e
 	query := `SELECT 
         ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
         u.id_usuario,u.nombre,u.correo,u.premium
-    FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE ro.fecha =? AND u.id_usuario = ?`
+    FROM usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE ro.fecha =? AND u.id_usuario = ?`
 	rows, err := sql.db.Query(query, parsedDate, idUser)
 	if err != nil {
 		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
@@ -160,7 +160,7 @@ func (sql *MySQL)GetOxygenById(idUser int) ([]domain.UserOxygen, error){
 	SELECT 
         ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
         u.id_usuario,u.nombre,u.correo,u.premium
-    FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE u.id_usuario = ?`
+    FROM usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE u.id_usuario = ?`
 
 	rows, err := sql.db.Query(query,idUser)
 	if err != nil {
@@ -200,7 +200,7 @@ func (sq *MySQL)GetOxygenSupervisorByIdUser(idUser int)([]domain.UserOxygen, err
 	query := `SELECT 
 		ro.id_oxigeno,ro.fecha,ro.hora,ro.medidaRegistrada,
 		u.id_usuario,u.nombre,u.correo,u.premium
-	FROM Usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE u.id_usuario = ?`
+	FROM usuario u INNER JOIN registrooxigeno ro ON ro.id_user = u.id_usuario WHERE u.id_usuario = ?`
 
 	rows, err := sq.db.Query(query,idUser)
 	if err != nil {
