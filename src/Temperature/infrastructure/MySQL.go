@@ -203,3 +203,44 @@ func (sql *MySQL)GetTemperatureById(idUser int)([]domain.UserTemperature, error)
 	
 
 }
+
+func (sql *MySQL)GetTemperatureSupervisorByIdUser(idUser int) ([]domain.UserTemperature,error){
+	var userTemperatureArray []domain.UserTemperature
+
+	query := `SELECT 
+		rt.id_temp,rt.fecha,rt.hora,rt.medidaRegistrada,
+		u.id_usuario,u.nombre, u.correo,u.premium
+	FROM Usuario u INNER JOIN registrotemperatura rt ON rt.id_user = u.id_usuario WHERE  u.id_usuario = ?`
+
+	rows, err := sql.db.Query(query,idUser)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userTemperatureSupervisor domain.UserTemperature
+
+		err := rows.Scan(
+			&userTemperatureSupervisor.Id_temp,
+			&userTemperatureSupervisor.Date,
+			&userTemperatureSupervisor.Time,
+			&userTemperatureSupervisor.RegisteredMeasure,
+			&userTemperatureSupervisor.Id_user,
+			&userTemperatureSupervisor.Name,
+			&userTemperatureSupervisor.Email,
+			&userTemperatureSupervisor.Premium)
+
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear fila: %v", err)
+		}
+
+		userTemperatureArray = append(userTemperatureArray, userTemperatureSupervisor)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al recorrer filas: %v", err)
+	}
+
+	return userTemperatureArray, nil
+}

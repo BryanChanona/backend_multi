@@ -6,4 +6,5 @@ type ITemperature interface {
 	GetTemperature() ([]UserTemperature, error)
 	GetTemperatureByDate(idUser int,date string,) ([]UserTemperature,error)
 	GetTemperatureById(idUser int)([]UserTemperature, error)
+	GetTemperatureSupervisorByIdUser(idUser int) ([]UserTemperature,error)
 }

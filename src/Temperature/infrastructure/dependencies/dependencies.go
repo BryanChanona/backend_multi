@@ -41,5 +41,9 @@ func GetUserTemperaturesByIdController()*controllers.TemperatureByIdController{
 	useCase := UseCase.NewTemperatureByIdUc(&mySQL)
 	return controllers.NewTemperatureByIdController(useCase)
 }
+func GetTemperatureSupervisorByIdUserController()*controllers.GetTemperatureSupervisorByIdUserController{
+	useCase := UseCase.NewTemperatureSupervisorUc(&mySQL)
+	return controllers.NewGetTemperatureSupervisorByIdUserController(useCase)
+}
 
 

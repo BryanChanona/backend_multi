@@ -6,4 +6,5 @@ type IHeartRateRepository interface {
 	GetUserHeartRate() ([]UserHeartRate, error)
 	GetHeartRateByDate(idUser int,date string) ([]UserHeartRate,error)
 	GetHeartRateById(idUser int) ([]UserHeartRate,error)
+	GetHeartRateSupervisorByIdUser(idUser int) ([]UserHeartRate,error)
 }

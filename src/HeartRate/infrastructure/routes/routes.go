@@ -12,11 +12,13 @@ func Routes(router *gin.Engine){
 	getUserHeartRateController := dependencies.GetUserHeartRateController().Execute
 	getUserHeartRateByDateController := dependencies.GetUserHeartRateByDateController().Execute	
 	getUserHeartRateByIdController := dependencies.GetUserHeartRateByIdController().Execute
+	getUserHeartRateSupervisorByIdController := dependencies.GetHeartRateSupervisorByIdUserController().Execute
 
 	routes.POST("/",getSaveHeartRateController)
 	routes.GET("/",getUserHeartRateController)
 	routes.GET("/:date",middlewares.AuthMiddleware(),getUserHeartRateByDateController)
 	routes.GET("/heartRateById",middlewares.AuthMiddleware(),getUserHeartRateByIdController)
+	routes.GET("/heartRateByIdSupervisor",middlewares.AuthSupervisorMiddleware(),getUserHeartRateSupervisorByIdController)
 
 
 }

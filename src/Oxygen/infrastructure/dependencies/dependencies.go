@@ -39,3 +39,8 @@ func GetOxygenByIdController()*controller.OxygenByIdController{
 	useCase := UseCase.NewOxygenByIdUc(&mySQL)
 	return controller.NewOxygenByIdController(useCase)
 }
+
+func GetOxygenSupervisorByIdUserController()*controller.OxygenSupervisorController{
+	useCase := UseCase.NewOxygenSupervisorUc(&mySQL)
+	return controller.NewOxygenSupervisorController(useCase)
+}

@@ -193,3 +193,46 @@ func (sql *MySQL) GetHeartRateById(idUser int) ([]domain.UserHeartRate,error){
 
 
 }
+
+func (sql *MySQL)GetHeartRateSupervisorByIdUser(idUser int) ([]domain.UserHeartRate,error){
+	var userHeartRatesArray []domain.UserHeartRate
+
+	query := `SELECT 
+       rb.id_bpm,rb.fecha,rb.hora,rb.medidaRegistrada,
+		u.id_usuario,u.nombre, u.correo,u.premium
+	FROM Usuario u INNER JOIN registrobpm rb ON rb.id_user = u.id_usuario WHERE  u.id_usuario = ?`
+
+	rows, err := sql.db.Query(query,idUser)
+	if err != nil {
+		return nil, fmt.Errorf("error al ejecutar la consulta: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userHeartRateSupervisor domain.UserHeartRate
+
+		err := rows.Scan(
+			&userHeartRateSupervisor.Id_bpm,
+			&userHeartRateSupervisor.Date,
+			&userHeartRateSupervisor.Time,
+			&userHeartRateSupervisor.RegisteredMeasure,
+			&userHeartRateSupervisor.Id_user,
+			&userHeartRateSupervisor.Name,
+			&userHeartRateSupervisor.Email,
+			&userHeartRateSupervisor.Premium)
+
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear fila: %v", err)
+		}
+
+		userHeartRatesArray = append(userHeartRatesArray,userHeartRateSupervisor)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al recorrer filas: %v", err)
+	}
+
+	return userHeartRatesArray, nil
+
+
+}

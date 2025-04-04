@@ -41,3 +41,8 @@ func GetHeartRateController()*controllers.SaveHeartRateController{
 	useCase := UseCase.NewHeartRateByIdUc(&mySQL)
 	return controllers.NewUserHeartRateByIdController(useCase)
  }
+
+ func GetHeartRateSupervisorByIdUserController() *controllers.HeartRateSupervisorByIdUserController{
+	useCase := UseCase.NewHeartRateSupervisorUc(&mySQL)
+	return controllers.NewHeartRateSupervisorByIdUserController(useCase)
+ }

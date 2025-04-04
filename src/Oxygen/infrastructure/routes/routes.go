@@ -12,10 +12,12 @@ func Routes(router *gin.Engine){
 	getUserOxygenController := dependencies.GetOxygenationsController().Execute
 	getUserOxygenByDate := dependencies.GetOxygenUserByDateController().Execute
 	getUserOxygenById := dependencies.GetOxygenByIdController().Execute
+	getUserOxygenSupervisorById := dependencies.GetOxygenSupervisorByIdUserController().Execute
 
 	routes.POST("/",saveOxygenController)
 	routes.GET("/",getUserOxygenController)
 	routes.GET("/:date",middlewares.AuthMiddleware(),getUserOxygenByDate)
 	routes.GET("/oxygenById",middlewares.AuthMiddleware(),getUserOxygenById)
+	routes.GET("/oxygenByIdSupervisor",middlewares.AuthSupervisorMiddleware(),getUserOxygenSupervisorById)
 
 }

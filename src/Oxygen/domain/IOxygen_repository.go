@@ -5,4 +5,5 @@ type IOxygenRepository interface {
 	GetUserOxygen() ([]UserOxygen, error)
 	GetOxygenByDate(date string,idUser int) ([]UserOxygen,error)
 	GetOxygenById(idUser int) ([]UserOxygen, error)
+	GetOxygenSupervisorByIdUser(idUser int) ([]UserOxygen,error)
 }
